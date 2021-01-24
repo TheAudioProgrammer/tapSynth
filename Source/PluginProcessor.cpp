@@ -157,6 +157,10 @@ void TapSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         }
     }
     
+    for (const juce::MidiMessageMetadata metadata : midiMessages)
+            if (metadata.numBytes == 3)
+                juce::Logger::writeToLog ("TimeStamp: " + juce::String (metadata.getMessage().getTimeStamp()));
+    
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
 }
 
