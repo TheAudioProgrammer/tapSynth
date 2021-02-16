@@ -15,7 +15,7 @@
 //==============================================================================
 /*
 */
-class AdsrComponent  : public juce::Component
+class AdsrComponent : public juce::Component
 {
 public:
     AdsrComponent (juce::AudioProcessorValueTreeState& apvts);
