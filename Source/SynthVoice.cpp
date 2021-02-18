@@ -18,8 +18,12 @@ bool SynthVoice::canPlaySound (juce::SynthesiserSound* sound)
 
 void SynthVoice::startNote (int midiNoteNumber, float velocity, juce::SynthesiserSound *sound, int currentPitchWheelPosition)
 {
-    osc1.setFreq (midiNoteNumber);
-    osc2.setFreq (midiNoteNumber);
+    for (int i = 0; i < 2; i++)
+    {
+        osc1[i].setFreq (midiNoteNumber);
+        osc2[i].setFreq (midiNoteNumber);
+    }
+    
     adsr.noteOn();
 }
 
@@ -50,8 +54,11 @@ void SynthVoice::prepareToPlay (double sampleRate, int samplesPerBlock, int outp
     spec.sampleRate = sampleRate;
     spec.numChannels = outputChannels;
     
-    osc1.prepareToPlay (sampleRate, samplesPerBlock, outputChannels);
-    osc2.prepareToPlay (sampleRate, samplesPerBlock, outputChannels);
+    for (int i = 0; i < 2; i++)
+    {
+        osc1[i].prepareToPlay (sampleRate, samplesPerBlock, outputChannels);
+        osc2[i].prepareToPlay (sampleRate, samplesPerBlock, outputChannels);
+    }
     
     gain.prepare (spec);
     gain.setGainLinear (0.07f);
@@ -68,13 +75,21 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer< float > &outputBuffer, int 
     
     synthBuffer.setSize (outputBuffer.getNumChannels(), numSamples, false, false, true);
     synthBuffer.clear();
+    
+    for (int i = 0; i < synthBuffer.getNumChannels(); ++i)
+    {
+        auto* buffer = synthBuffer.getWritePointer (i, 0);
+        
+        for (int j = 0; j < synthBuffer.getNumSamples(); ++j)
+        {
+            buffer[j] = osc1[i].processNextSample (buffer[j]) + osc2[i].processNextSample (buffer[j]);
+        }
+    }
+    
     juce::dsp::AudioBlock<float> audioBlock { synthBuffer };
     
-    osc1.renderNextBlock (audioBlock);
-    osc2.renderNextBlock (audioBlock);
-
     gain.process (juce::dsp::ProcessContextReplacing<float> (audioBlock));
-    
+
     adsr.applyEnvelopeToBuffer (synthBuffer, 0, synthBuffer.getNumSamples());
     
     for (int channel = 0; channel < outputBuffer.getNumChannels(); ++channel)

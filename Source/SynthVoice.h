@@ -26,13 +26,15 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels);
     void renderNextBlock (juce::AudioBuffer< float > &outputBuffer, int startSample, int numSamples) override;
     
-    OscData& getOscillator1() { return osc1; }
-    OscData& getOscillator2() { return osc2; }
+    std::array<OscData, 2>& getOscillator1() { return osc1; }
+    std::array<OscData, 2>& getOscillator2() { return osc2; }
     AdsrData& getAdsr() { return adsr; }
     
 private:
-    OscData osc1;
-    OscData osc2;
+//    OscData osc1;
+//    OscData osc2;
+    std::array<OscData, 2> osc1;
+    std::array<OscData, 2> osc2;
     AdsrData adsr;
     juce::AudioBuffer<float> synthBuffer;
     

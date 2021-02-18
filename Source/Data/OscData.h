@@ -18,14 +18,19 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels);
     void setType (const int oscSelection);
     void setGain (const float levelInDecibels);
-    void setPitchVal (const int pitch);
+    void setOscPitch (const int pitch);
     void setFreq (const int midiNoteNumber);
+    void setFmOsc (const float freq, const float depth);
     void renderNextBlock (juce::dsp::AudioBlock<float>& audioBlock);
+    float processNextSample (float input);
     
 private:
+    juce::dsp::Oscillator<float> fmOsc { [](float x) { return std::sin (x); }};
     juce::dsp::Gain<float> gain;
-    int pitchVal { 0 };
+    int lastPitch { 0 };
     int lastMidiNote { 0 };
+    float fmDepth { 0.0f };
+    float fmModulator { 0.0f };
 };
 
 // return std::sin (x); //Sine Wave
