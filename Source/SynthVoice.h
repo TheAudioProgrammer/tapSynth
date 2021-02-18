@@ -31,8 +31,6 @@ public:
     AdsrData& getAdsr() { return adsr; }
     
 private:
-//    OscData osc1;
-//    OscData osc2;
     std::array<OscData, 2> osc1;
     std::array<OscData, 2> osc2;
     AdsrData adsr;

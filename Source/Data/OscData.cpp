@@ -85,3 +85,11 @@ float OscData::processNextSample (float input)
     fmModulator = fmOsc.processSample (input) * fmDepth;
     return gain.processSample (processSample (input));
 }
+
+void OscData::setParams (const int oscChoice, const float oscGain, const int oscPitch, const float fmFreq, const float fmDepth)
+{
+    setType (oscChoice);
+    setGain (oscGain);
+    setOscPitch (oscPitch);
+    setFmOsc (fmFreq, fmDepth);
+}

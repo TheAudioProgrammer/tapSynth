@@ -23,6 +23,8 @@ public:
     void setFmOsc (const float freq, const float depth);
     void renderNextBlock (juce::dsp::AudioBlock<float>& audioBlock);
     float processNextSample (float input);
+    void setParams (const int oscChoice, const float oscGain, const int oscPitch, const float fmFreq, const float fmDepth);
+
     
 private:
     juce::dsp::Oscillator<float> fmOsc { [](float x) { return std::sin (x); }};

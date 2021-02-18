@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "UI/OscComponent.h"
+#include "UI/FilterComponent.h"
 #include "UI/AdsrComponent.h"
 
 //==============================================================================
@@ -30,6 +31,7 @@ private:
     TapSynthAudioProcessor& audioProcessor;
     OscComponent osc1;
     OscComponent osc2;
+    FilterComponent filter;
     AdsrComponent adsr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapSynthAudioProcessorEditor)
