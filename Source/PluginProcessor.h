@@ -12,6 +12,7 @@
 #include "SynthVoice.h"
 #include "SynthSound.h"
 #include "Data/FilterData.h"
+#include "Data/AdsrData.h"
 
 //==============================================================================
 /**
@@ -62,11 +63,18 @@ private:
     static constexpr int numChannelsToProcess { 2 };
     juce::Synthesiser synth;
     std::array<FilterData, numChannelsToProcess> filter;
+    
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
     void setParams();
     void setVoiceParams();
     void setFilterParams();
+    void setReverbParams();
+    
     static constexpr int numVoices { 5 };
+    std::array<juce::dsp::Oscillator<float>, numChannelsToProcess> lfo;
+    std::array<float, numChannelsToProcess> lfoOutput { 0.0f, 0.0f };
+    juce::dsp::Reverb reverb;
+    juce::Reverb::Parameters reverbParams;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapSynthAudioProcessor)

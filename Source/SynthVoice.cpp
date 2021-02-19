@@ -25,11 +25,13 @@ void SynthVoice::startNote (int midiNoteNumber, float velocity, juce::Synthesise
     }
     
     adsr.noteOn();
+    filterAdsr.noteOn();
 }
 
 void SynthVoice::stopNote (float velocity, bool allowTailOff)
 {
     adsr.noteOff();
+    filterAdsr.noteOff();
     
     if (! allowTailOff || ! adsr.isActive())
         clearCurrentNote();
@@ -48,6 +50,7 @@ void SynthVoice::pitchWheelMoved (int newPitchWheelValue)
 void SynthVoice::prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels)
 {
     adsr.setSampleRate (sampleRate);
+    filterAdsr.setSampleRate (sampleRate);
     
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
@@ -74,6 +77,10 @@ void SynthVoice::renderNextBlock (juce::AudioBuffer< float > &outputBuffer, int 
         return;
     
     synthBuffer.setSize (outputBuffer.getNumChannels(), numSamples, false, false, true);
+    
+    filterAdsr.applyEnvelopeToBuffer (synthBuffer, 0, synthBuffer.getNumSamples());
+    filterAdsrOutput = filterAdsr.getNextSample();
+    
     synthBuffer.clear();
     
     for (int i = 0; i < synthBuffer.getNumChannels(); ++i)

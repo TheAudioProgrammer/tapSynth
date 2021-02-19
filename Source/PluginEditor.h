@@ -13,6 +13,8 @@
 #include "UI/OscComponent.h"
 #include "UI/FilterComponent.h"
 #include "UI/AdsrComponent.h"
+#include "UI/LfoComponent.h"
+#include "UI/ReverbComponent.h"
 
 //==============================================================================
 /**
@@ -33,6 +35,9 @@ private:
     OscComponent osc2;
     FilterComponent filter;
     AdsrComponent adsr;
+    LfoComponent lfo1;
+    AdsrComponent filterAdsr;
+    ReverbComponent reverb;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapSynthAudioProcessorEditor)
 };

@@ -22,7 +22,8 @@ public:
     void setLfoParams (const float freq, const float depth);
     void processNextBlock (juce::AudioBuffer<float>& buffer);
     float processNextSample (int channel, float inputValue);
+    
 private:
     void selectFilterType (const int type);
-    OscData lfo;
+    juce::dsp::Oscillator<float> lfo { [](float x) { return std::sin (x); }};
 };

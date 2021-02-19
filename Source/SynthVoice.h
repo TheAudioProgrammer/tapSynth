@@ -29,12 +29,16 @@ public:
     std::array<OscData, 2>& getOscillator1() { return osc1; }
     std::array<OscData, 2>& getOscillator2() { return osc2; }
     AdsrData& getAdsr() { return adsr; }
+    AdsrData& getFilterAdsr() { return filterAdsr; }
+    float getFilterAdsrOutput() { return filterAdsrOutput; }
     
 private:
     std::array<OscData, 2> osc1;
     std::array<OscData, 2> osc2;
     AdsrData adsr;
+    AdsrData filterAdsr;
     juce::AudioBuffer<float> synthBuffer;
+    float filterAdsrOutput { 0.0f };
     
     juce::dsp::Gain<float> gain;
     bool isPrepared { false };

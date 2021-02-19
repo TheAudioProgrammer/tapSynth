@@ -19,8 +19,8 @@ void FilterData::setParams (const int filterType, const float filterCutoff, cons
 
 void FilterData::setLfoParams (const float freq, const float depth)
 {
-    lfo.setGain (juce::Decibels::gainToDecibels (depth));
-    lfo.setFrequency (freq);
+//    lfoGain = juce::Decibels::gainToDecibels (depth);
+//    lfo.setFrequency (freq);
 }
 
 void FilterData::prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels)
@@ -31,7 +31,6 @@ void FilterData::prepareToPlay (double sampleRate, int samplesPerBlock, int outp
     spec.numChannels = outputChannels;
     
     prepare (spec);
-    lfo.prepareToPlay (sampleRate, samplesPerBlock, outputChannels);
 }
 
 

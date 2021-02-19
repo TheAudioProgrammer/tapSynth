@@ -19,7 +19,7 @@ void OscData::prepareToPlay (double sampleRate, int samplesPerBlock, int outputC
     
     prepare (spec);
     fmOsc.prepare (spec);
-    gain.prepare (spec);
+    gain.prepare (spec);    
 }
 
 void OscData::setType (const int oscSelection)

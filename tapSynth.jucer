@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="cNKSGD" name="tapSynth" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              cppLanguageStandard="17">
   <MAINGROUP id="KMptmw" name="tapSynth">
     <GROUP id="{3C4B8AF0-CC1B-B776-74F0-C1D0B8E63F93}" name="Source">
       <FILE id="cCsQG0" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -30,9 +31,16 @@
               file="Source/UI/FilterComponent.cpp"/>
         <FILE id="g6fDCL" name="FilterComponent.h" compile="0" resource="0"
               file="Source/UI/FilterComponent.h"/>
+        <FILE id="qBZMwg" name="LfoComponent.cpp" compile="1" resource="0"
+              file="Source/UI/LfoComponent.cpp"/>
+        <FILE id="wCLCyX" name="LfoComponent.h" compile="0" resource="0" file="Source/UI/LfoComponent.h"/>
         <FILE id="u3IlwZ" name="OscComponent.cpp" compile="1" resource="0"
               file="Source/UI/OscComponent.cpp"/>
         <FILE id="HofuLH" name="OscComponent.h" compile="0" resource="0" file="Source/UI/OscComponent.h"/>
+        <FILE id="Y1tPbu" name="ReverbComponent.cpp" compile="1" resource="0"
+              file="Source/UI/ReverbComponent.cpp"/>
+        <FILE id="Q2fbNB" name="ReverbComponent.h" compile="0" resource="0"
+              file="Source/UI/ReverbComponent.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
