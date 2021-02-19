@@ -25,7 +25,6 @@ public:
     float processNextSample (float input);
     void setParams (const int oscChoice, const float oscGain, const int oscPitch, const float fmFreq, const float fmDepth);
 
-    
 private:
     juce::dsp::Oscillator<float> fmOsc { [](float x) { return std::sin (x); }};
     juce::dsp::Gain<float> gain;

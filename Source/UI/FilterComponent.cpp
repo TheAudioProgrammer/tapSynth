@@ -19,6 +19,8 @@ FilterComponent::FilterComponent (juce::AudioProcessorValueTreeState& apvts, juc
     filterTypeSelector.setSelectedItemIndex (0);
     addAndMakeVisible (filterTypeSelector);
     
+    filterTypeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(apvts, filterTypeId, filterTypeSelector);
+    
     setSliderParams (cutoffSlider, cutoffLabel, cutoffAttachment, cutoffId, apvts);
     setSliderParams (resonanceSlider, resonanceLabel, resonanceAttachment, resonanceId, apvts);
 }

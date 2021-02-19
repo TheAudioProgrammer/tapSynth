@@ -59,10 +59,14 @@ public:
     juce::AudioProcessorValueTreeState apvts;
 
 private:
+    static constexpr int numChannelsToProcess { 2 };
     juce::Synthesiser synth;
-    FilterData filter;
+    std::array<FilterData, numChannelsToProcess> filter;
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
     void setParams();
+    void setVoiceParams();
+    void setFilterParams();
+    static constexpr int numVoices { 5 };
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapSynthAudioProcessor)

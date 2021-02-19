@@ -50,7 +50,7 @@ void OscData::setType (const int oscSelection)
 
 void OscData::setGain (const float levelInDecibels)
 {
-    gain.setGainDecibels(levelInDecibels);
+    gain.setGainDecibels (levelInDecibels);
 }
 
 void OscData::setOscPitch (const int pitch)

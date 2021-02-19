@@ -24,12 +24,15 @@ TapSynthAudioProcessor::TapSynthAudioProcessor()
 {
     synth.addSound (new SynthSound());
     
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < numVoices; i++)
     {
         synth.addVoice (new SynthVoice());
     }
     
-    filter.setType (juce::dsp::StateVariableTPTFilterType::lowpass);
+    for (int ch = 0; ch < numChannelsToProcess; ++ch)
+    {
+        filter[ch].setType (juce::dsp::StateVariableTPTFilterType::lowpass);
+    }
 }
 
 TapSynthAudioProcessor::~TapSynthAudioProcessor()
@@ -112,12 +115,10 @@ void TapSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         }
     }
     
-    juce::dsp::ProcessSpec spec;
-    spec.maximumBlockSize = samplesPerBlock;
-    spec.sampleRate = sampleRate;
-    spec.numChannels = getTotalNumOutputChannels();
-    
-    filter.prepare (spec);
+    for (int ch = 0; ch < numChannelsToProcess; ++ch)
+    {
+        filter[ch].prepareToPlay (sampleRate, samplesPerBlock, getTotalNumOutputChannels());
+    }
 }
 
 void TapSynthAudioProcessor::releaseResources()
@@ -163,8 +164,15 @@ void TapSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
     
-    juce::dsp::AudioBlock<float> block { buffer };
-    filter.process (juce::dsp::ProcessContextReplacing<float>(block));
+    for (int ch = 0; ch < numChannelsToProcess; ++ch)
+    {
+        auto* output = buffer.getWritePointer (ch);
+        
+        for (int s = 0; s < buffer.getNumSamples(); ++s)
+        {
+            output[s] = filter[ch].processNextSample (ch, buffer.getSample (ch, s));
+        }
+    }
 }
 
 //==============================================================================
@@ -223,11 +231,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout TapSynthAudioProcessor::crea
     params.push_back (std::make_unique<juce::AudioParameterFloat>("OSC1FMDEPTH", "Oscillator 1 FM Depth", juce::NormalisableRange<float> { 0.0f, 100.0f, 0.1f }, 0.0f, ""));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("OSC2FMDEPTH", "Oscillator 2 FM Depth", juce::NormalisableRange<float> { 0.0f, 100.0f, 0.1f }, 0.0f, ""));
     
+    // LFO
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("LFO1FREQ", "LFO1 Frequency", juce::NormalisableRange<float> { 0.0f, 20.0f, 0.1f }, 0.0f, "Hz"));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("LFO1DEPTH", "LFO1 Depth", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.1f }, 0.0f, ""));
+    
     //Filter
     params.push_back (std::make_unique<juce::AudioParameterChoice>("FILTERTYPE", "Filter Type", juce::StringArray { "Low Pass", "Band Pass", "High Pass" }, 0));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERCUTOFF", "Filter Cutoff", juce::NormalisableRange<float> { 20.0f, 20000.0f, 0.1f, 0.6f }, 20000.0f, "Hz"));
     params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERRESONANCE", "Filter Resonance", juce::NormalisableRange<float> { 0.1f, 2.0f, 0.1f }, 0.1f, ""));
-    
     
     // ADSR
     params.push_back (std::make_unique<juce::AudioParameterFloat>("ATTACK", "Attack", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
@@ -239,6 +250,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout TapSynthAudioProcessor::crea
 }
 
 void TapSynthAudioProcessor::setParams()
+{
+    setVoiceParams();
+    setFilterParams();
+}
+
+void TapSynthAudioProcessor::setVoiceParams()
 {
     for (int i = 0; i < synth.getNumVoices(); ++i)
     {
@@ -265,7 +282,7 @@ void TapSynthAudioProcessor::setParams()
             
             auto& adsr = voice->getAdsr();
            
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < getTotalNumOutputChannels(); i++)
             {
                 osc1[i].setParams (osc1Choice, osc1Gain, osc1Pitch, osc1FmFreq, osc1FmDepth);
                 osc2[i].setParams (osc2Choice, osc2Gain, osc2Pitch, osc2FmFreq, osc2FmDepth);
@@ -274,10 +291,20 @@ void TapSynthAudioProcessor::setParams()
             adsr.update (attack.load(), decay.load(), sustain.load(), release.load());
         }
     }
-    
+}
+
+void TapSynthAudioProcessor::setFilterParams()
+{
     auto& filterType = *apvts.getRawParameterValue ("FILTERTYPE");
     auto& filterCutoff = *apvts.getRawParameterValue ("FILTERCUTOFF");
     auto& filterResonance = *apvts.getRawParameterValue ("FILTERRESONANCE");
     
-    filter.setParams (filterType, filterCutoff, filterResonance);
+    auto& lfoFreq = *apvts.getRawParameterValue ("LFO1FREQ");
+    auto& lfoDepth = *apvts.getRawParameterValue ("LFO1DEPTH");
+    
+    for (int ch = 0; ch < numChannelsToProcess; ++ch)
+    {
+        filter[ch].setParams (filterType, filterCutoff, filterResonance);
+        filter[ch].setLfoParams (lfoFreq, lfoDepth);
+    }
 }

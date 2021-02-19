@@ -17,8 +17,26 @@ void FilterData::setParams (const int filterType, const float filterCutoff, cons
     setResonance (filterResonance);
 }
 
-void FilterData::selectFilterType (const int filterType)
+void FilterData::setLfoParams (const float freq, const float depth)
 {
+    lfo.setGain (juce::Decibels::gainToDecibels (depth));
+    lfo.setFrequency (freq);
+}
+
+void FilterData::prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels)
+{
+    juce::dsp::ProcessSpec spec;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.sampleRate = sampleRate;
+    spec.numChannels = outputChannels;
+    
+    prepare (spec);
+    lfo.prepareToPlay (sampleRate, samplesPerBlock, outputChannels);
+}
+
+
+void FilterData::selectFilterType (const int filterType)
+{    
     switch (filterType)
     {
         case 0:
@@ -37,4 +55,15 @@ void FilterData::selectFilterType (const int filterType)
             setType (juce::dsp::StateVariableTPTFilterType::lowpass);
             break;
     }
+}
+
+void FilterData::processNextBlock(juce::AudioBuffer<float>& buffer)
+{
+    juce::dsp::AudioBlock<float> block { buffer };
+    process (juce::dsp::ProcessContextReplacing<float>(block));
+}
+
+float FilterData::processNextSample (int channel, float inputValue)
+{
+    return processSample (channel, inputValue);
 }
