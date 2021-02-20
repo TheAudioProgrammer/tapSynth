@@ -11,17 +11,17 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "CustomComponent.h"
 
 //==============================================================================
 /*
 */
-class LfoComponent  : public juce::Component
+class LfoComponent  : public CustomComponent
 {
 public:
     LfoComponent (juce::AudioProcessorValueTreeState& apvts, juce::String lfoFreqId, juce::String lfoDepthId);
     ~LfoComponent() override;
 
-    void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
@@ -38,9 +38,11 @@ private:
     std::unique_ptr<SliderAttachment> lfoFreqAttachment;
     std::unique_ptr<SliderAttachment> lfoDepthAttachment;
     
-    static constexpr float fontHeight { 15.0f };
-    static constexpr int textBoxWidth { 50 };
-    static constexpr int textBoxHeight { 20 };
+    SliderWithLabel lfoFreq;
+    SliderWithLabel lfoDepth;
+    
+    static constexpr int dialWidth = 70;
+    static constexpr int dialHeight = 70;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LfoComponent)
 };

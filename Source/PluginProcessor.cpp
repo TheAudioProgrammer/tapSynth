@@ -352,9 +352,8 @@ void TapSynthAudioProcessor::setFilterParams()
     for (int ch = 0; ch < numChannelsToProcess; ++ch)
     {
         lfo[ch].setFrequency (lfoFreq);
-        filterCutoff = (200.0f * adsrOutput) + filterCutoff;
+        //filterCutoff = (200.0f * adsrOutput) + filterCutoff;
         filterCutoff = (lfoDepth * lfoOutput[ch]) + filterCutoff;
-        DBG (filterCutoff);
         auto cutoff = std::clamp<float> (filterCutoff, 20.0f, 20000.0f);
                 
         filter[ch].setParams (filterType, cutoff, filterResonance);
