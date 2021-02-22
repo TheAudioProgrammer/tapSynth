@@ -25,14 +25,9 @@ TapSynthAudioProcessor::TapSynthAudioProcessor()
 {
     synth.addSound (new SynthSound());
     
-    for (int i = 0; i < numVoices; i++)
+    for (int i = 0; i < 5; i++)
     {
         synth.addVoice (new SynthVoice());
-    }
-    
-    for (int ch = 0; ch < numChannelsToProcess; ++ch)
-    {
-        filter[ch].setType (juce::dsp::StateVariableTPTFilterType::lowpass);
     }
 }
 
@@ -121,13 +116,6 @@ void TapSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     spec.sampleRate = sampleRate;
     spec.numChannels = getTotalNumOutputChannels();
     
-    for (int ch = 0; ch < numChannelsToProcess; ++ch)
-    {
-        filter[ch].prepareToPlay (sampleRate, samplesPerBlock, getTotalNumOutputChannels());
-        lfo[ch].prepare (spec);
-        lfo[ch].initialise ([](float x) { return std::sin (x); });
-    }
-    
     reverbParams.roomSize = 0.5f;
     reverbParams.width = 1.0f;
     reverbParams.damping = 0.5f;
@@ -180,18 +168,6 @@ void TapSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     setParams();
         
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
-    
-    for (int ch = 0; ch < numChannelsToProcess; ++ch)
-    {
-        auto* output = buffer.getWritePointer (ch);
-        
-        for (int s = 0; s < buffer.getNumSamples(); ++s)
-        {            
-            lfoOutput[ch] = lfo[ch].processSample (buffer.getSample (ch, s));
-            output[s] = filter[ch].processNextSample (ch, buffer.getSample (ch, s));
-        }
-    }
-    
     juce::dsp::AudioBlock<float> block { buffer };
     reverb.process (juce::dsp::ProcessContextReplacing<float> (block));
 }
@@ -268,10 +244,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout TapSynthAudioProcessor::crea
     params.push_back (std::make_unique<juce::AudioParameterFloat>("RELEASE", "Release", juce::NormalisableRange<float> { 0.1f, 3.0f, 0.1f }, 0.4f));
     
     params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERADSRDEPTH", "Filter ADSR Depth", juce::NormalisableRange<float> { 0.0f, 10000.0f, 0.1f, 0.3f }, 10000.0f, ""));
-    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERATTACK", "Filter Attack", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
-    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERDECAY", "Filter Decay", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 0.1f));
-    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERSUSTAIN", "Filter Sustain", juce::NormalisableRange<float> { 0.1f, 1.0f, 0.1f }, 1.0f));
-    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERRELEASE", "Filter Release", juce::NormalisableRange<float> { 0.1f, 3.0f, 0.1f }, 0.4f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERATTACK", "Filter Attack", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.01f }, 0.01f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERDECAY", "Filter Decay", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.1f }, 0.1f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERSUSTAIN", "Filter Sustain", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.1f }, 1.0f));
+    params.push_back (std::make_unique<juce::AudioParameterFloat>("FILTERRELEASE", "Filter Release", juce::NormalisableRange<float> { 0.0f, 3.0f, 0.1f }, 0.1f));
     
     // Reverb
     params.push_back (std::make_unique<juce::AudioParameterFloat>("REVERBSIZE", "Reverb Size", juce::NormalisableRange<float> { 0.0f, 1.0f, 0.1f }, 0.0f, ""));
@@ -341,22 +317,16 @@ void TapSynthAudioProcessor::setFilterParams()
     auto& filterType = *apvts.getRawParameterValue ("FILTERTYPE");
     auto& filterCutoff = *apvts.getRawParameterValue ("FILTERCUTOFF");
     auto& filterResonance = *apvts.getRawParameterValue ("FILTERRESONANCE");
-    
+    auto& adsrDepth = *apvts.getRawParameterValue ("FILTERADSRDEPTH");
     auto& lfoFreq = *apvts.getRawParameterValue ("LFO1FREQ");
     auto& lfoDepth = *apvts.getRawParameterValue ("LFO1DEPTH");
-    
-    auto& filterAdsrDepth = *apvts.getRawParameterValue ("FILTERADSRDEPTH");
-    
-    auto adsrOutput = dynamic_cast<SynthVoice*>(synth.getVoice(0))->getFilterAdsr().getNextSample();
-    
-    for (int ch = 0; ch < numChannelsToProcess; ++ch)
+        
+    for (int i = 0; i < synth.getNumVoices(); ++i)
     {
-        lfo[ch].setFrequency (lfoFreq);
-        //filterCutoff = (200.0f * adsrOutput) + filterCutoff;
-        filterCutoff = (lfoDepth * lfoOutput[ch]) + filterCutoff;
-        auto cutoff = std::clamp<float> (filterCutoff, 20.0f, 20000.0f);
-                
-        filter[ch].setParams (filterType, cutoff, filterResonance);
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
+        {
+            voice->updateModParams (filterType, filterCutoff, filterResonance, adsrDepth, lfoFreq, lfoDepth);
+        }
     }
 }
 

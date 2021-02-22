@@ -12,6 +12,8 @@
 
 void OscData::prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels)
 {
+    resetAll();
+    
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
     spec.sampleRate = sampleRate;
@@ -92,4 +94,11 @@ void OscData::setParams (const int oscChoice, const float oscGain, const int osc
     setGain (oscGain);
     setOscPitch (oscPitch);
     setFmOsc (fmFreq, fmDepth);
+}
+
+void OscData::resetAll()
+{
+    reset();
+    fmOsc.reset();
+    gain.reset();
 }

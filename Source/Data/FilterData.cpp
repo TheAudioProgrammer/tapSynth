@@ -10,6 +10,11 @@
 
 #include "FilterData.h"
 
+FilterData::FilterData()
+{
+    setType (juce::dsp::StateVariableTPTFilterType::lowpass);
+}
+
 void FilterData::setParams (const int filterType, const float filterCutoff, const float filterResonance)
 {
     selectFilterType (filterType);
@@ -25,11 +30,11 @@ void FilterData::setLfoParams (const float freq, const float depth)
 
 void FilterData::prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels)
 {
+    resetAll();
     juce::dsp::ProcessSpec spec;
     spec.maximumBlockSize = samplesPerBlock;
     spec.sampleRate = sampleRate;
     spec.numChannels = outputChannels;
-    
     prepare (spec);
 }
 
@@ -65,4 +70,10 @@ void FilterData::processNextBlock(juce::AudioBuffer<float>& buffer)
 float FilterData::processNextSample (int channel, float inputValue)
 {
     return processSample (channel, inputValue);
+}
+
+void FilterData::resetAll()
+{
+    reset();
+    lfo.reset();
 }
