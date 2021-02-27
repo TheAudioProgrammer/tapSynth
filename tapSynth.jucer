@@ -20,6 +20,8 @@
         <FILE id="jhGYSk" name="AdsrData.h" compile="0" resource="0" file="Source/Data/AdsrData.h"/>
         <FILE id="aAQb1V" name="FilterData.cpp" compile="1" resource="0" file="Source/Data/FilterData.cpp"/>
         <FILE id="Htzwpx" name="FilterData.h" compile="0" resource="0" file="Source/Data/FilterData.h"/>
+        <FILE id="wSXBfT" name="MeterData.cpp" compile="1" resource="0" file="Source/Data/MeterData.cpp"/>
+        <FILE id="AdziIs" name="MeterData.h" compile="0" resource="0" file="Source/Data/MeterData.h"/>
         <FILE id="WYgre1" name="OscData.cpp" compile="1" resource="0" file="Source/Data/OscData.cpp"/>
         <FILE id="Taa7Z9" name="OscData.h" compile="0" resource="0" file="Source/Data/OscData.h"/>
       </GROUP>

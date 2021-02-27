@@ -170,6 +170,9 @@ void TapSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
     juce::dsp::AudioBlock<float> block { buffer };
     reverb.process (juce::dsp::ProcessContextReplacing<float> (block));
+    
+    meter.processRMS (buffer);
+    meter.processPeak (buffer);
 }
 
 //==============================================================================

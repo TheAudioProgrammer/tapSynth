@@ -20,6 +20,7 @@ TapSynthAudioProcessorEditor::TapSynthAudioProcessorEditor (TapSynthAudioProcess
 , lfo1 (audioProcessor.apvts, "LFO1FREQ", "LFO1DEPTH")
 , filterAdsr (audioProcessor.apvts, "FILTERATTACK", "FILTERDECAY", "FILTERSUSTAIN", "FILTERRELEASE")
 , reverb (audioProcessor.apvts, "REVERBSIZE", "REVERBDAMPING", "REVERBWIDTH", "REVERBDRY", "REVERBWET", "REVERBFREEZE")
+, meter (audioProcessor)
 {
     auto tapImage = juce::ImageCache::getFromMemory (BinaryData::tapLogo_png, BinaryData::tapLogo_pngSize);
     
@@ -56,18 +57,20 @@ TapSynthAudioProcessorEditor::TapSynthAudioProcessorEditor (TapSynthAudioProcess
     filter.setBoundsColour (filterColour);
     lfo1.setBoundsColour (filterColour);
         
+    
+    startTimerHz (30);
     setSize (1080, 525);
 }
 
 TapSynthAudioProcessorEditor::~TapSynthAudioProcessorEditor()
 {
+    stopTimer();
 }
 
 //==============================================================================
 void TapSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::black);
-    
 }
 
 void TapSynthAudioProcessorEditor::resized()
@@ -85,4 +88,7 @@ void TapSynthAudioProcessorEditor::resized()
     logo.setBounds (meter.getRight(), osc2.getBottom() + 30, 250, 100);
 }
 
-
+void TapSynthAudioProcessorEditor::timerCallback()
+{
+    repaint();
+}

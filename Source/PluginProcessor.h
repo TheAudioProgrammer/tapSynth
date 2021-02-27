@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "SynthVoice.h"
 #include "SynthSound.h"
+#include "Data/MeterData.h"
 
 //==============================================================================
 /**
@@ -55,6 +56,8 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
+    const std::atomic<float>& getRMS() { return meter.getRMS(); }
+    const std::atomic<float>& getPeak() { return meter.getPeak(); }
     juce::AudioProcessorValueTreeState apvts;
 
 private:
@@ -70,6 +73,7 @@ private:
     static constexpr int numVoices { 5 };
     juce::dsp::Reverb reverb;
     juce::Reverb::Parameters reverbParams;
+    MeterData meter;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapSynthAudioProcessor)

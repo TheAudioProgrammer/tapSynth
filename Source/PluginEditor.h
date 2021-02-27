@@ -22,6 +22,7 @@
 /**
 */
 class TapSynthAudioProcessorEditor  : public juce::AudioProcessorEditor
+, public juce::Timer
 {
 public:
     TapSynthAudioProcessorEditor (TapSynthAudioProcessor&);
@@ -30,6 +31,8 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    
+    void timerCallback() override;
 
 private:
     TapSynthAudioProcessor& audioProcessor;
