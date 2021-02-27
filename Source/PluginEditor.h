@@ -15,6 +15,8 @@
 #include "UI/AdsrComponent.h"
 #include "UI/LfoComponent.h"
 #include "UI/ReverbComponent.h"
+#include "UI/MeterComponent.h"
+#include "UI/Assets.h"
 
 //==============================================================================
 /**
@@ -38,6 +40,8 @@ private:
     LfoComponent lfo1;
     AdsrComponent filterAdsr;
     ReverbComponent reverb;
+    MeterComponent meter;
+    juce::ImageComponent logo;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapSynthAudioProcessorEditor)
 };

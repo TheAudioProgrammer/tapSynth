@@ -27,6 +27,8 @@
         <FILE id="Gh5xhC" name="AdsrComponent.cpp" compile="1" resource="0"
               file="Source/UI/AdsrComponent.cpp"/>
         <FILE id="xSj7wT" name="AdsrComponent.h" compile="0" resource="0" file="Source/UI/AdsrComponent.h"/>
+        <FILE id="hSvdy6" name="Assets.cpp" compile="1" resource="0" file="Source/UI/Assets.cpp"/>
+        <FILE id="bgmm8T" name="Assets.h" compile="0" resource="0" file="Source/UI/Assets.h"/>
         <FILE id="EycF9K" name="CustomComponent.cpp" compile="1" resource="0"
               file="Source/UI/CustomComponent.cpp"/>
         <FILE id="NqPkIn" name="CustomComponent.h" compile="0" resource="0"
@@ -45,7 +47,14 @@
               file="Source/UI/ReverbComponent.cpp"/>
         <FILE id="Q2fbNB" name="ReverbComponent.h" compile="0" resource="0"
               file="Source/UI/ReverbComponent.h"/>
+        <FILE id="Sma7Kz" name="MeterComponent.cpp" compile="1" resource="0"
+              file="Source/UI/MeterComponent.cpp"/>
+        <FILE id="RVA90e" name="MeterComponent.h" compile="0" resource="0"
+              file="Source/UI/MeterComponent.h"/>
       </GROUP>
+    </GROUP>
+    <GROUP id="{2079F4D1-B478-97B8-2F1E-3BC34F4CF5C7}" name="Assets">
+      <FILE id="YGqe4N" name="tapLogo.png" compile="0" resource="1" file="Assets/tapLogo.png"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

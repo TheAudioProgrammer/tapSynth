@@ -21,6 +21,13 @@ TapSynthAudioProcessorEditor::TapSynthAudioProcessorEditor (TapSynthAudioProcess
 , filterAdsr (audioProcessor.apvts, "FILTERATTACK", "FILTERDECAY", "FILTERSUSTAIN", "FILTERRELEASE")
 , reverb (audioProcessor.apvts, "REVERBSIZE", "REVERBDAMPING", "REVERBWIDTH", "REVERBDRY", "REVERBWET", "REVERBFREEZE")
 {
+    auto tapImage = juce::ImageCache::getFromMemory (BinaryData::tapLogo_png, BinaryData::tapLogo_pngSize);
+    
+    if (tapImage.isValid())
+        logo.setImage (tapImage, juce::RectanglePlacement::stretchToFit);
+    else
+        jassertfalse;
+    
     addAndMakeVisible (osc1);
     addAndMakeVisible (osc2);
     addAndMakeVisible (filter);
@@ -28,6 +35,8 @@ TapSynthAudioProcessorEditor::TapSynthAudioProcessorEditor (TapSynthAudioProcess
     addAndMakeVisible (lfo1);
     addAndMakeVisible (filterAdsr);
     addAndMakeVisible (reverb);
+    addAndMakeVisible (meter);
+    addAndMakeVisible (logo);
     
     osc1.setName ("Oscillator 1");
     osc2.setName ("Oscillator 2");
@@ -35,6 +44,7 @@ TapSynthAudioProcessorEditor::TapSynthAudioProcessorEditor (TapSynthAudioProcess
     lfo1.setName ("Filter LFO");
     filterAdsr.setName ("Filter ADSR");
     adsr.setName ("ADSR");
+    meter.setName ("Meter");
     
     auto oscColour = juce::Colour::fromRGB (247, 190, 67);
     auto filterColour = juce::Colour::fromRGB (246, 87, 64);
@@ -57,6 +67,7 @@ TapSynthAudioProcessorEditor::~TapSynthAudioProcessorEditor()
 void TapSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::black);
+    
 }
 
 void TapSynthAudioProcessorEditor::resized()
@@ -70,6 +81,8 @@ void TapSynthAudioProcessorEditor::resized()
     filterAdsr.setBounds (filter.getRight(), 0, 230, 360);
     adsr.setBounds (filterAdsr.getRight(), 0, 230, 360);
     reverb.setBounds (0, osc2.getBottom(), oscWidth, 150);
+    meter.setBounds (reverb.getRight(), osc2.getBottom(), filterAdsr.getWidth() + lfo1.getWidth(), 150);
+    logo.setBounds (meter.getRight(), osc2.getBottom() + 30, 250, 100);
 }
 
 
