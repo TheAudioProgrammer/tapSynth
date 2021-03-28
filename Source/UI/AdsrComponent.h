@@ -25,7 +25,9 @@ public:
     void resized() override;
 
 private:
-    void setSliderParams (juce::Slider& slider);
+    using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+    
+    void setSliderWithLabel (juce::Slider& slider, juce::Label& label, juce::AudioProcessorValueTreeState& apvts, juce::String paramId, std::unique_ptr<Attachment>& attachment);
     
     juce::Slider attackSlider;
     juce::Slider decaySlider;
@@ -38,6 +40,11 @@ private:
     std::unique_ptr<SliderAttachment> decayAttachment;
     std::unique_ptr<SliderAttachment> sustainAttachment;
     std::unique_ptr<SliderAttachment> releaseAttachment;
+    
+    juce::Label attackLabel { "Attack", "A" };
+    juce::Label decayLabel { "Decay", "D" };
+    juce::Label sustainLabel { "Sustain", "S" };
+    juce::Label releaseLabel { "Release", "R" };
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AdsrComponent)
 };
