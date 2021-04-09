@@ -14,12 +14,14 @@ TapSynthAudioProcessorEditor::TapSynthAudioProcessorEditor (TapSynthAudioProcess
 : AudioProcessorEditor (&p)
 , audioProcessor (p)
 , osc (audioProcessor.apvts, "OSC1WAVETYPE", "OSC1FMFREQ", "OSC1FMDEPTH")
-, adsr (audioProcessor.apvts)
+, adsr (audioProcessor.apvts, "ATTACK", "DECAY", "SUSTAIN", "RELEASE")
+, filterAdsr (audioProcessor.apvts, "FILTERATTACK", "FILTERDECAY", "FILTERSUSTAIN", "FILTERRELEASE")
 , filter (audioProcessor.apvts, "FILTERTYPE", "FILTERFREQ", "FILTERRES")
 {
-    setSize (600, 500);
+    setSize (620, 500);
     addAndMakeVisible (osc);
     addAndMakeVisible (adsr);
+    addAndMakeVisible (filterAdsr);
     addAndMakeVisible (filter);
 }
 
@@ -40,8 +42,9 @@ void TapSynthAudioProcessorEditor::resized()
     const auto paddingY2 = 235;
     
     osc.setBounds (paddingX, paddingY, 300, 200);
-    adsr.setBounds (osc.getRight(), paddingY, 280, 200);
-    filter.setBounds (paddingX, paddingY2, 300, 200);
+    adsr.setBounds (osc.getRight(), paddingY, 300, 200);
+    filterAdsr.setBounds (paddingX, paddingY2, 300, 200);
+    filter.setBounds (filterAdsr.getRight(), paddingY2, 300, 200);
 }
 
 
